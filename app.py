@@ -9,7 +9,7 @@ reviews_db = [
         "user_id": 1, 
         "lecturer_id": 101, 
         "subject_id": "CSP1123",
-        "text": "Great class!",
+        "text": "GOATED class!",
 
         # RATING CATEGORIES
         "rating_clarity": 5,
@@ -20,8 +20,8 @@ reviews_db = [
         "id": 2, 
         "user_id": 2, 
         "lecturer_id": 102,
-        "subject_id": "MPU1122",
-        "text": "A bit too fast, but helpful.",
+        "subject_id": "CMT1114",
+        "text": "Informative lectures.",
         "rating_clarity": 3,
         "rating_engagement": 4,
         "rating_punctuality": 5
