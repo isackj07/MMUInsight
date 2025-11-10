@@ -1,1 +1,8 @@
+# Virtual Environment
 venv/
+
+# Python cache
+__pycache__/
+
+# Local Database
+main.db
