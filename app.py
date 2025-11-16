@@ -6,7 +6,7 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 
 # Configure the database (a local file)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mmuinsight.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/mmuinsight.db'
 
 # Initialize the database manager (ORM)
 db = SQLAlchemy(app)
@@ -15,7 +15,6 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
 
-# --- DATABASE MODELS ---
 # This is the "blueprint" for our shared tables
 
 class User(db.Model):
@@ -47,8 +46,10 @@ class Review(db.Model):
     rating_clarity = db.Column(db.Integer, nullable=False)
     rating_engagement = db.Column(db.Integer, nullable=False)
     rating_punctuality = db.Column(db.Integer, nullable=False)
+    rating_helpfulness = db.Column(db.Integer, nullable=False)
+    rating_workload = db.Column(db.Integer, nullable=False)
     
-    # --- These are the "links" (Foreign Keys) ---
+    # These are the "links" (Foreign Keys) 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # The student who wrote it
     lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # The lecturer being reviewed
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False) # The subject it's for
