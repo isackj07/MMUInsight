@@ -53,3 +53,8 @@ class Review(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # The student who wrote it
     lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # The lecturer being reviewed
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False) # The subject it's for
+    
+
+#review routes dont touch
+from reviews import reviews_bp
+app.register_blueprint(reviews_bp, url_prefix='/reviews')
