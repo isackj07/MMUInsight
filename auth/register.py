@@ -1,21 +1,21 @@
 import uuid
-from flask import Blueprint, render_template, request, redirect, url_for, session
-from app import User, db, bcrypt
+from flask import render_template, request
+from extensions import db, bcrypt
+from models import User
+from . import auth_bp
 
-register_bp = Blueprint('register_bp', __name__)
 
-@register_bp.route('/register', methods=['GET', 'POST'])
+@auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
         return render_template("register.html")
 
-    email = request.form.get("email")
-    password = request.form.get("password")
-    confirm_password = request.form.get("confirm_password")
-    user_type = request.form.get("user_type")
+    email = request.form.get("email") 
+    password = request.form.get("password") or ""
+    confirm_password = request.form.get("confirm_password") or ""
+    user_type = request.form.get("user_type") or "student"
 
-
-    if not (email.endswith("@student.mmu.edu.my") or email.endswith("@mmu.edu.my")):
+    if not (email.endswith("@student.mmu.edu.my") and not email.endswith("@mmu.edu.my")):
         return "Error: email must be an MMU address"
 
     if password != confirm_password:
@@ -31,15 +31,15 @@ def register():
 
     new_user = User(
         email=email,
-        password_hash=hashed_pw,  
+        password_hash=hashed_pw,
         user_type=user_type,
         is_verified=False,
-        verification_token=token
+        verification_token=token,
     )
 
     db.session.add(new_user)
     db.session.commit()
 
-    # temporarily: show verification link directly (no email yet)
+    # for now we just show the verification link (no real email)
     return f"Account created. Please verify using this link: /verify/{token}"
     

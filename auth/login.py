@@ -1,9 +1,10 @@
-from flask import Blueprint, request, render_template, session
-from app import User, db, bcrypt
+from flask import render_template, request, session
+from extensions import bcrypt
+from models import User
+from . import auth_bp
 
-auth_bp = Blueprint('auth_bp', __name__)
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
+@auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("login.html")
@@ -27,7 +28,3 @@ def login():
 
     return f"Login OK for {user.email}"
 
-@auth_bp.route('/logout')
-def logout():
-    session.clear()
-    return "Logged out"
