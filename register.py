@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request
-from app import User, db, bcrypt
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from extensions import db, bcrypt
+from models import User
 
-register_bp = Blueprint('register_bp', __name__)
+register_bp = Blueprint('register', __name__)
 
 @register_bp.route('/register', methods=['GET', 'POST'])
 def register():
