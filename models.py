@@ -8,4 +8,4 @@ class User(db.Model):
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
     verification_token = db.Column(db.String(100), nullable=True)
-
+    reset_token = db.Column(db.String(100), nullable=True)

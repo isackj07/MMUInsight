@@ -1,8 +1,7 @@
 from flask import render_template, request, session
+from auth import auth_bp
 from extensions import bcrypt
 from models import User
-from . import auth_bp
-
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():

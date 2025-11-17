@@ -1,6 +1,5 @@
 from flask import session
-from . import auth_bp
-
+from auth import auth_bp
 
 @auth_bp.route("/logout")
 def logout():
