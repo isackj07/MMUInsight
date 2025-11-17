@@ -1,12 +1,16 @@
-from flask import Flask
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy #translator between python and db
 from flask_bcrypt import Bcrypt 
+import os 
 
 # Initialize app and extensions
 app = Flask(__name__)
 
-# Configure the database (a local file)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/mmuinsight.db'
+# Configure the database (a local file) (i fixed this shit)
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+db_path = os.path.join(BASE_DIR, 'database', 'mmuinsight.db')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
 
 # Initialize the database manager (ORM)
 db = SQLAlchemy(app)
@@ -53,3 +57,6 @@ class Review(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # The student who wrote it
     lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # The lecturer being reviewed
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False) # The subject it's for
+
+from register import register_bp
+app.register_blueprint(register_bp)
