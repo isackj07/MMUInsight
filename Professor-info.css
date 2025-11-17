@@ -1,0 +1,83 @@
+.Professor-info{
+    border: 1px solid red;
+    display: block;
+    height: 300px;
+    width: 1100px;
+    background-color:burlywood;
+    margin: auto;
+}
+
+.Professor-Name{
+    margin-left: 50px;
+    text-decoration: underline;
+    width: 200px;
+    font-size: 30px;
+}
+
+.Recent-Courses{
+    text-decoration: underline;
+    font-weight: bolder;
+    font-size: 20px;
+}
+
+.Rating-score{
+    margin-left: 50px;
+    font-weight: 800;
+}
+
+p{
+    margin-left: 50px;
+}
+
+.Courses{
+    float: left;
+    height:200px;
+    width:400px;
+    background-color: darkgrey;
+}
+
+.Comments{
+    float: left;
+    height:200px;
+    width:400px;
+    background-color: darkgrey;
+}
+
+.Comments-header{
+    font-weight: bolder;
+    text-decoration: underline;
+    font-size: 20px;
+}
+
+.Professor-info-header{
+    display: flex;
+    height: 100px;
+    background-color:burlywood;
+}
+
+.Logo{
+    float: left;
+    background-color: rgb(202, 202, 202);
+    width: 90px;
+    height: 80px;
+    margin-left: 15px;
+    margin-top: 9px;
+}
+
+.buttons{
+    float: right;
+    margin-left: 88%;
+    margin-top: 1.7%;
+    text-align: center;
+    border: 1px solid red;
+    height: 50px;
+}
+
+button{
+    background-color:rgb(202, 202, 202);
+    border: 2px solid black;
+    padding: 15px 15px;
+    font-size: medium;
+    cursor: pointer;
+    transition-duration: 1s;
+}
