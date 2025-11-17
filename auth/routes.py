@@ -14,4 +14,3 @@ def dashboard():
 @admin_required
 def admin_only():
     return "Admin-only area (requires user_type = 'admin')"
-
