@@ -6,6 +6,10 @@ import os
 # Initialize app and extensions
 app = Flask(__name__)
 
+# dev secret key – lowkey fucking ghetto method
+app.config['SECRET_KEY'] = 'mmuinsight-dev-secret'
+# (or: app.secret_key = 'mmuinsight-dev-secret')
+
 # Configure the database (a local file) (i fixed this shit)
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(BASE_DIR, 'database', 'mmuinsight.db')
