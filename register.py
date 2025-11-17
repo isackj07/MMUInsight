@@ -1,3 +1,4 @@
+import uuid
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from app import User, db, bcrypt
 
@@ -13,6 +14,7 @@ def register():
     confirm_password = request.form.get("confirm_password")
     user_type = request.form.get("user_type")
 
+
     if not (email.endswith("@student.mmu.edu.my") or email.endswith("@mmu.edu.my")):
         return "Error: email must be an MMU address"
 
@@ -25,17 +27,21 @@ def register():
 
     hashed_pw = bcrypt.generate_password_hash(password).decode("utf-8")
 
+    token = str(uuid.uuid4())
+
     new_user = User(
         email=email,
-        password_hash=hashed_pw,   
+        password_hash=hashed_pw,  
         user_type=user_type,
-        is_verified=False       
+        is_verified=False,
+        verification_token=token
     )
 
     db.session.add(new_user)
     db.session.commit()
 
-    return f"User registered: {email} as {user_type}"
+    # temporarily: show verification link directly (no email yet)
+    return f"Account created. Please verify using this link: /verify/{token}"
     
 @register_bp.route('/login', methods=['GET', 'POST'])
 def login():

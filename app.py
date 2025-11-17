@@ -32,6 +32,7 @@ class User(db.Model):
     user_type = db.Column(db.String(10), nullable=False, default='student') # 'student' or 'lecturer'
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    verification_token = db.Column(db.String(100), nullable=True)
     
     # Relationship: Connects User to the reviews they have written
     reviews_written = db.relationship('Review', foreign_keys='Review.user_id', backref='author', lazy=True)
@@ -63,4 +64,7 @@ class Review(db.Model):
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False) # The subject it's for
 
 from register import register_bp
+from verify import verify_bp
+
 app.register_blueprint(register_bp)
+app.register_blueprint(verify_bp)
