@@ -5,12 +5,12 @@ body{
     margin: auto;
     margin-top: 75px;
     padding: 50px;
-    background-image: url("Despair.png");
+    background-image: url("C:\Users\Jimha\Projects\MMUInsight\templates\Despair.png");
     background-size: 400px 550px;
     background-repeat: no-repeat;
     background-position: center;
     background-position-y: 75px;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-family: Futura, Georgia, Times, 'Times New Roman', serif;
 }
 
 h1{
