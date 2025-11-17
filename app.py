@@ -1,24 +1,23 @@
-import os
 from flask import Flask
+import os
+
 from extensions import db, bcrypt
-from models import User  
-from auth import auth_bp
+from models import User, Subject, Review  # ensure models imported
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = "isac_is_a_monkey67"
-
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(BASE_DIR, "database", "mmuinsight.db")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_path
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db_path = os.path.join(BASE_DIR, 'database', 'mmuinsight.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
 
 db.init_app(app)
 bcrypt.init_app(app)
 
-app.register_blueprint(auth_bp)
-
+@app.get("/")
+def index():
+    return "MMUInsight running"
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
