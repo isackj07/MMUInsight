@@ -3,10 +3,11 @@ from extensions import db
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
-    password_hash = db.Column(db.String(60), nullable=False)
-    user_type = db.Column(db.String(10), nullable=False, default='student')
+    password_hash = db.Column(db.String(128), nullable=False)
+    user_type = db.Column(db.String(10), nullable=False, default='student')  # student|lecturer
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    verification_token = db.Column(db.String(100), nullable=True)
 
     reviews_written = db.relationship('Review', foreign_keys='Review.user_id', backref='author', lazy=True)
     reviews_received = db.relationship('Review', foreign_keys='Review.lecturer_id', backref='lecturer', lazy=True)
@@ -28,6 +29,6 @@ class Review(db.Model):
     rating_helpfulness = db.Column(db.Integer, nullable=False)
     rating_workload = db.Column(db.Integer, nullable=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)        # author
+    lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)    # reviewed lecturer
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
