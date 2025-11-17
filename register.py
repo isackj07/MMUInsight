@@ -43,34 +43,3 @@ def register():
     # temporarily: show verification link directly (no email yet)
     return f"Account created. Please verify using this link: /verify/{token}"
     
-@register_bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == "GET":
-        return render_template("login.html")
-
-    email = request.form.get("email")
-    password = request.form.get("password")
-
-    user = User.query.filter_by(email=email).first()
-
-    if not user:
-        return "Error: invalid email or password"
-
-    try:
-        if not user.is_verified:
-            return "Error: account not verified yet"
-    except AttributeError:
-        pass
-
-    if not bcrypt.check_password_hash(user.password_hash, password):
-        return "Error: invalid email or password"
-
-    session["user_id"] = user.id
-    session["user_type"] = user.user_type
-
-    return f"Login OK for {user.email}"
-
-@register_bp.route('/logout')
-def logout():
-    session.clear()
-    return "Logged out"    
