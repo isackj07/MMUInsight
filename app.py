@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy #translator between python and db
 from flask_bcrypt import Bcrypt 
+from reviews import reviews_bp
 
 # Initialize app and extensions
 app = Flask(__name__)
@@ -58,3 +59,5 @@ class Review(db.Model):
 #review routes dont touch
 from reviews import reviews_bp
 app.register_blueprint(reviews_bp, url_prefix='/reviews')
+
+
