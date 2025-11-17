@@ -63,7 +63,7 @@ class Review(db.Model):
     lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # The lecturer being reviewed
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False) # The subject it's for
 
-rom register import register_bp
+from register import register_bp
 from verify import verify_bp
 from auth import auth_bp   
 
