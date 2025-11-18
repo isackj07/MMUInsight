@@ -27,41 +27,53 @@ def admin_dashboard():
         admin_count=admin_count,
     )
 
-
 @auth_bp.route("/admin/users")
 @admin_required
 def admin_users():
     users = User.query.all()
     return render_template("admin_users.html", users=users)
 
-
-@auth_bp.route("/admin/users/<int:user_id>/verify")
+@auth_bp.route("/admin/user/<int:user_id>/verify")
 @admin_required
 def admin_verify_user(user_id):
-    user = User.query.get_or_404(user_id)
-    user.is_verified = True
-    db.session.commit()
+    user = User.query.get(user_id)
+    if user:
+        user.is_verified = True
+        db.session.commit()
     return redirect(url_for("auth.admin_users"))
 
-
-@auth_bp.route("/admin/users/<int:user_id>/make-admin")
+@auth_bp.route("/admin/user/<int:user_id>/make-admin")
 @admin_required
 def admin_make_admin(user_id):
-    user = User.query.get_or_404(user_id)
-    user.user_type = "admin"
-    db.session.commit()
+    user = User.query.get(user_id)
+    if user:
+        user.user_type = "admin"
+        db.session.commit()
     return redirect(url_for("auth.admin_users"))
 
+@auth_bp.route("/admin/user/<int:user_id>/remove-admin")
+@admin_required
+def admin_remove_admin(user_id):
+    user = User.query.get(user_id)
+    if user:
+        user.user_type = "student"  
+        db.session.commit()
+    return redirect(url_for("auth.admin_users"))
 
-@auth_bp.route("/admin/users/<int:user_id>/delete")
+@auth_bp.route("/admin/user/<int:user_id>/suspend")
+@admin_required
+def admin_suspend_user(user_id):
+    user = User.query.get(user_id)
+    if user:
+        user.is_verified = False    
+        db.session.commit()
+    return redirect(url_for("auth.admin_users"))
+
+@auth_bp.route("/admin/user/<int:user_id>/delete")
 @admin_required
 def admin_delete_user(user_id):
-    user = User.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
     return redirect(url_for("auth.admin_users"))
-
-    user_type = user.user_type
-
-
-
