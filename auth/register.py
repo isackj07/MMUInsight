@@ -8,7 +8,7 @@ from . import auth_bp
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("register.html")  # or return "Register page"
+        return render_template("register.html")
 
     email = request.form.get("email", "").strip()
     password = request.form.get("password", "")

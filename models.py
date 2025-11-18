@@ -1,14 +1,11 @@
+from flask_login import UserMixin
 from extensions import db
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-<<<<<<< HEAD
-    user_type = db.Column(db.String(10), nullable=False, default='student')  # student|lecturer
-=======
-    user_type = db.Column(db.String(10), nullable=False, default='student') # 'student' or 'lecturer'
->>>>>>> 71c8bfaaed558d42e4f80d40d1448d4d9d8cf668
+    user_type = db.Column(db.String(10), nullable=False, default='student')
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
     verification_token = db.Column(db.String(100), nullable=True)
@@ -26,23 +23,14 @@ class Subject(db.Model):
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     review_text = db.Column(db.Text, nullable=False)
-<<<<<<< HEAD
 
-=======
->>>>>>> 71c8bfaaed558d42e4f80d40d1448d4d9d8cf668
     rating_clarity = db.Column(db.Integer, nullable=False)
     rating_engagement = db.Column(db.Integer, nullable=False)
     rating_punctuality = db.Column(db.Integer, nullable=False)
     rating_helpfulness = db.Column(db.Integer, nullable=False)
     rating_workload = db.Column(db.Integer, nullable=False)
-<<<<<<< HEAD
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)        # author
-    lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)    # reviewed lecturer
-    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
-=======
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=True)
 
->>>>>>> 71c8bfaaed558d42e4f80d40d1448d4d9d8cf668

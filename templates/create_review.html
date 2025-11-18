@@ -1,93 +1,47 @@
 {% extends 'base.html' %}
-<!-- 
-this file meets your frontend requirements:
-1. extends base.html
-2. has a form with inputs for your 5 rating categories
-3. has a text area for 'review_text'
--->
 
-{% block title %}submit review for {{ lecturer.email }}{% endblock %}
+{% block title %}Write Review{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto p-8 bg-white shadow-xl rounded-lg mt-8 mb-8">
+<div class="container">
+    <h2>Write a Review for {{ lecturer.email }}</h2>
     
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">submit review</h1>
-    <h2 class="text-xl font-light text-indigo-600 mb-6 border-b pb-4">
-        lecturer: {{ lecturer.email }}
-    </h2>
-
-    <!-- this block shows flash messages (errors or success) -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="mb-6 space-y-3">
-            {% for category, message in messages %}
-                <div class="p-3 rounded-md text-sm {% if category == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-
-    <!-- the form sends data to your reviews.py route -->
-    <form method="post" action="{{ url_for('reviews.create_review', lecturer_id=lecturer.id) }}" class="space-y-6">
+    <form method="POST">
+        <div class="form-group">
+            <label for="review_text">Review:</label>
+            <textarea id="review_text" name="review_text" rows="5" required></textarea>
+        </div>
         
-        <!-- subject dropdown -->
-        <div>
-            <label for="subject_id" class="block text-sm font-medium text-gray-700">subject</label>
-            <select id="subject_id" name="subject_id" required
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                <option value="" disabled selected>select a subject</option>
-                {% for subject in subjects %}
-                <option value="{{ subject.id }}">{{ subject.subject_name }} ({{ subject.subject_code }})</option>
-                {% endfor %}
-            </select>
+        <h3>Rate the Lecturer</h3>
+        
+        <div class="form-group">
+            <label for="rating_clarity">Clarity (1-5):</label>
+            <input type="number" id="rating_clarity" name="rating_clarity" min="1" max="5" required>
         </div>
-
-        <!-- 5 rating categories -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-                <label for="rating_clarity" class="block text-sm font-medium text-gray-700">clarity (1-5)</label>
-                <input type="number" id="rating_clarity" name="rating_clarity" min="1" max="5" required
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-            </div>
-            <div>
-                <label for="rating_engagement" class="block text-sm font-medium text-gray-700">engagement (1-5)</label>
-                <input type="number" id="rating_engagement" name="rating_engagement" min="1" max="5" required
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-            </div>
-            <div>
-                <label for="rating_punctuality" class="block text-sm font-medium text-gray-700">punctuality (1-5)</label>
-                <input type="number" id="rating_punctuality" name="rating_punctuality" min="1" max="5" required
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-            </div>
-            <div>
-                <label for="rating_helpfulness" class="block text-sm font-medium text-gray-700">helpfulness (1-5)</label>
-                <input type="number" id="rating_helpfulness" name="rating_helpfulness" min="1" max="5" required
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-            </div>
-            <div>
-                <label for="rating_workload" class="block text-sm font-medium text-gray-700">workload (1-5)</label>
-                <input type="number" id="rating_workload" name="rating_workload" min="1" max="5" required
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-            </div>
+        
+        <div class="form-group">
+            <label for="rating_engagement">Engagement (1-5):</label>
+            <input type="number" id="rating_engagement" name="rating_engagement" min="1" max="5" required>
         </div>
-
-        <!-- text area for review_text -->
-        <div>
-            <label for="review_text" class="block text-sm font-medium text-gray-700">detailed review</label>
-            <textarea id="review_text" name="review_text" rows="6" required minlength="20"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      placeholder="write at least 20 characters..."></textarea>
+        
+        <div class="form-group">
+            <label for="rating_punctuality">Punctuality (1-5):</label>
+            <input type="number" id="rating_punctuality" name="rating_punctuality" min="1" max="5" required>
         </div>
-
-        <!-- submit button -->
-        <div>
-            <button type="submit" 
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-                submit review
-            </button>
+        
+        <div class="form-group">
+            <label for="rating_helpfulness">Helpfulness (1-5):</label>
+            <input type="number" id="rating_helpfulness" name="rating_helpfulness" min="1" max="5" required>
         </div>
+        
+        <div class="form-group">
+            <label for="rating_workload">Workload (1-5):</label>
+            <input type="number" id="rating_workload" name="rating_workload" min="1" max="5" required>
+        </div>
+        
+        
+        <button type="submit">Submit Review</button>
+        <a href="{{ url_for('index') }}">Cancel</a>
     </form>
 </div>
 {% endblock %}
