@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Admin Dashboard</h1>
+
+    <p>Total users: {{ total_users }}</p>
+    <p>Verified users: {{ verified_users }}</p>
+    <p>Admins: {{ admin_count }}</p>
+
+    <a href="{{ url_for('auth.admin_users') }}">Manage Users</a>
+  </body>
+</html>

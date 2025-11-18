@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>User Management</h1>
+
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>User Type</th>
+        <th>Verified?</th>
+        <th>Actions</th>
+      </tr>
+
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.user_type }}</td>
+        <td>{{ 'Yes' if user.is_verified else 'No' }}</td>
+        <td>
+          {% if not user.is_verified %}
+            <a href="{{ url_for('auth.admin_verify_user', user_id=user.id) }}">Verify</a>
+          {% endif %}
+
+          {% if user.user_type != 'admin' %}
+            <a href="{{ url_for('auth.admin_make_admin', user_id=user.id) }}">Make Admin</a>
+          {% endif %}
+
+          <a href="{{ url_for('auth.admin_delete_user', user_id=user.id) }}">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <br>
+    <a href="{{ url_for('auth.admin_dashboard') }}">Back to admin dashboard</a>
+  </body>
+</html>
