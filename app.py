@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from extensions import db, bcrypt
 from models import User  
 from auth import auth_bp
@@ -18,6 +18,9 @@ bcrypt.init_app(app)
 
 app.register_blueprint(auth_bp)
 
+@app.route("/")
+def index():
+    return render_template("register.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
