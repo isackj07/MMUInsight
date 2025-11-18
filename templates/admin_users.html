@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <h1>Manage Users</h1>
+
+<table border="1" cellpadding="8" cellspacing="0" style="margin-top: 20px; width: 100%;">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Verified</th>
+            <th>User Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ "Yes" if u.is_verified else "No" }}</td>
+            <td>{{ u.user_type }}</td>
+
+            <td>
+                <a href="/admin/user/{{ u.id }}/verify">Verify</a> |
+                <a href="/admin/user/{{ u.id }}/make-admin">Make Admin</a> |
+                <a href="/admin/user/{{ u.id }}/remove-admin">Remove Admin</a> |
+                <a href="/admin/user/{{ u.id }}/suspend">Suspend</a> |
+                <a href="/admin/user/{{ u.id }}/delete" style="color:red;">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</html>

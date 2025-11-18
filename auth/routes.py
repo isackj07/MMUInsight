@@ -31,7 +31,7 @@ def admin_dashboard():
 @auth_bp.route("/admin/users")
 @admin_required
 def admin_users():
-    users = User.query.order_by(User.id).all()
+    users = User.query.all()
     return render_template("admin_users.html", users=users)
 
 
@@ -60,6 +60,8 @@ def admin_delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for("auth.admin_users"))
+
+    user_type = user.user_type
 
 
 
