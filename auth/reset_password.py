@@ -3,7 +3,7 @@ from flask import render_template, request
 from . import auth_bp
 from extensions import db, bcrypt
 from models import User
-
+from datetime import datetime, timedelta
 
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
@@ -23,6 +23,7 @@ def forgot_password():
 
     token = str(uuid.uuid4())
     user.reset_token = token
+    user.reset_token_created_at = datetime.utcnow()
     db.session.commit()
 
     # Temporary: show link directly instead of sending email
@@ -35,6 +36,12 @@ def reset_password(token):
 
     if not user:
         return "Invalid or expired reset link."
+
+    if not user.reset_token_created_at:
+        return "Invalid or expired token"
+
+    if datetime.utcnow() - user.reset_token_created_at > timedelta(minutes=10):
+        return "Reset token has expired. Please request a new one."
 
     if request.method == "GET":
         return render_template("reset_password.html")
