@@ -1,7 +1,6 @@
 from functools import wraps
 from flask import session, redirect, url_for
 
-
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -10,13 +9,10 @@ def login_required(f):
         return f(*args, **kwargs)
     return wrapper
 
-
 def admin_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if session.get("user_type") != "admin":
-            return "Forbidden", 403
+            return redirect(url_for("auth.index"))  
         return f(*args, **kwargs)
     return wrapper
-
-
