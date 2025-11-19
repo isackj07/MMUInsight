@@ -1,11 +1,9 @@
 import os
 from flask import Flask
 from extensions import db, bcrypt
-from models import User 
 from auth import auth_bp
 
 app = Flask(__name__)
-
 app.config["SECRET_KEY"] = "isac_is_a_monkey67"  
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
