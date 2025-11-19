@@ -1,6 +1,6 @@
-import os
-from flask import Flask, render_template, flash, get_flashed_messages
+from flask import Flask, get_flashed_messages
 from flask_login import LoginManager, current_user
+import os
 
 from extensions import db, bcrypt
 from models import User, Subject, Review
@@ -39,7 +39,7 @@ def index():
         lecturers = User.query.filter_by(user_type='lecturer').all()
         links = ""
         if current_user.user_type == 'student':
-            links = '<h2>Lecturers:</h2><ul>' + ''.join([f'<li><a href="/create_review/{l.id}">Write review for {l.email}</a></li>' for l in lecturers]) + '</ul>'
+            links = '<h2>Lecturers:</h2><ul>' + ''.join([f'<li><a href="/lecturer/{l.id}">{l.email}</a> | <a href="/create_review/{l.id}">Write review</a></li>' for l in lecturers]) + '</ul>'
         
         return f"""
         <style>
