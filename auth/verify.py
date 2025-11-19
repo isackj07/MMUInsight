@@ -1,4 +1,4 @@
-from auth import auth_bp
+from . import auth_bp
 from extensions import db
 from models import User
 

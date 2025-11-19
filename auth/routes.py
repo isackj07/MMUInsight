@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for
-from auth import auth_bp
+from . import auth_bp
 from auth.decorators import login_required, admin_required
 from models import User
 from extensions import db

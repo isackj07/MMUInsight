@@ -1,6 +1,6 @@
 import uuid
 from flask import render_template, request
-from auth import auth_bp
+from . import auth_bp
 from extensions import db, bcrypt
 from models import User
 
