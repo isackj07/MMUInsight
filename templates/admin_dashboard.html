@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Admin Dashboard</h1>
+
+    <p>Total users: {{ total_users }}</p>
+    <p>Verified users: {{ verified_users }}</p>
+    <p>Admins: {{ admin_count }}</p>
+
+    <a href="{{ url_for('auth.admin_users') }}">Manage Users</a>
+  </body>
+
+  <table>
+{% for u in users %}
+    <tr>
+        <td>{{ u.email }}</td>
+        <td>{{ u.user_type }}</td>
+        <td><a href="/admin/user/{{u.id}}/make-admin">Make Admin</a></td>
+        <td><a href="/admin/user/{{u.id}}/delete">Delete</a></td>
+    </tr>
+{% endfor %}
+</table>
+
+</html>
