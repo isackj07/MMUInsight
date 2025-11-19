@@ -16,12 +16,14 @@ def dashboard():
 @auth_bp.route("/admin")
 @admin_required
 def admin_dashboard():
-    total_users = User.query.count()
-    verified_users = User.query.filter_by(is_verified=True).count()
-    admin_count = User.query.filter_by(user_type="admin").count()
+    users = User.query.all()
+    total_users = len(users)
+    verified_users = sum(1 for u in users if u.is_verified)
+    admin_count = sum(1 for u in users if u.user_type == "admin")
 
     return render_template(
         "admin_dashboard.html",
+        users=users,             
         total_users=total_users,
         verified_users=verified_users,
         admin_count=admin_count,
