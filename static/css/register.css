@@ -16,3 +16,15 @@ body{
 h1{
     text-align: center;
 }
+
+.Warning{
+    font-weight: 2000;
+    font-size: 20px;
+    color: red;
+    text-align: center;
+}
+
+.Login{
+    text-align: center;
+    font-size: 20px;
+}
