@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ lecturer.email }} - Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ lecturer.email }}</h2>
+    <p>Lecturer Profile</p>
+    
+    <h3>Reviews ({{ reviews|length }})</h3>
+    
+    {% if reviews %}
+        {% for review in reviews %}
+        <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <p><strong>By:</strong> {{ review.author.email }}</p>
+            <p><strong>Review:</strong> {{ review.review_text }}</p>
+            
+            <p><strong>Ratings:</strong></p>
+            <ul>
+                <li>Clarity: {{ review.rating_clarity }}/5</li>
+                <li>Engagement: {{ review.rating_engagement }}/5</li>
+                <li>Punctuality: {{ review.rating_punctuality }}/5</li>
+                <li>Helpfulness: {{ review.rating_helpfulness }}/5</li>
+                <li>Workload: {{ review.rating_workload }}/5</li>
+            </ul>
+            
+            {% if review.author == current_user %}
+            <a href="{{ url_for('reviews.edit_review', review_id=review.id) }}" style="background-color: #ffc107; color: black; padding: 5px 10px; text-decoration: none; border-radius: 3px;">Edit</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+    
+    {% if current_user.user_type == 'student' %}
+    <a href="{{ url_for('reviews.create_review', lecturer_id=lecturer.id) }}" style="background-color: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px;">Write a Review</a>
+    {% endif %}
+    
+    <br><br>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</div>
+{% endblock %}
