@@ -1,4 +1,5 @@
 from extensions import db
+from datetime import datetime
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,3 +9,4 @@ class User(db.Model):
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
     verification_token = db.Column(db.String(100), nullable=True)
     reset_token = db.Column(db.String(100), nullable=True)
+    reset_token_created_at = db.Column(db.DateTime, nullable=True)
