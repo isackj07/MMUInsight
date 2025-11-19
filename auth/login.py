@@ -1,11 +1,14 @@
-from flask import render_template, request, session
+from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_user, current_user
+from . import auth_bp
 from extensions import bcrypt
 from models import User
-from . import auth_bp
-
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    
     if request.method == "GET":
         return render_template("login.html")
 
@@ -15,16 +18,18 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if not user:
-        return "Error: invalid email or password"
+        flash("Invalid email or password", "error")
+        return redirect(url_for("auth.login"))
 
     if not user.is_verified:
-        return "Error: account not verified yet"
+        flash("Account not verified yet", "error")
+        return redirect(url_for("auth.login"))
 
     if not bcrypt.check_password_hash(user.password_hash, password):
-        return "Error: invalid email or password"
+        flash("Invalid email or password", "error")
+        return redirect(url_for("auth.login"))
 
-    session["user_id"] = user.id
-    session["user_type"] = user.user_type
-
-    return f"Login OK for {user.email}"
+    login_user(user, remember=True)
+    flash("Login successful!", "success")
+    return redirect(url_for('index'))
 
