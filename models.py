@@ -1,18 +1,14 @@
+from flask_login import UserMixin
 from extensions import db
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
-<<<<<<< HEAD
     password_hash = db.Column(db.String(128), nullable=False)
-    user_type = db.Column(db.String(10), nullable=False, default='student') # 'student' or 'lecturer'
-=======
-    password_hash = db.Column(db.String(60), nullable=False)
-    user_type = db.Column(db.String(10), nullable=False, default='student') 
->>>>>>> b45f8209d4b7392c662abcedc5fd44dc57afe4ee
+    user_type = db.Column(db.String(10), nullable=False, default='student')
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
     verification_token = db.Column(db.String(100), nullable=True)
-<<<<<<< HEAD
+    reset_token = db.Column(db.String(100), nullable=True)
 
     reviews_written = db.relationship('Review', foreign_keys='Review.user_id', backref='author', lazy=True)
     reviews_received = db.relationship('Review', foreign_keys='Review.lecturer_id', backref='lecturer', lazy=True)
@@ -34,8 +30,4 @@ class Review(db.Model):
     rating_workload = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
-
-=======
-    reset_token = db.Column(db.String(100), nullable=True)
->>>>>>> b45f8209d4b7392c662abcedc5fd44dc57afe4ee
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=True)
