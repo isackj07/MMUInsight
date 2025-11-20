@@ -95,3 +95,23 @@ def edit_review(review_id):
     
     flash("Review updated successfully!", "success")
     return redirect(url_for('reviews.lecturer_profile', lecturer_id=review.lecturer_id))
+
+@reviews_bp.route('/review/<int:review_id>/delete', methods=['GET'])
+@login_required
+def delete_review(review_id):
+    review = Review.query.get_or_404(review_id)
+    
+    # Security check: only author can delete their own review
+    if review.author != current_user:
+        flash("You can only delete your own reviews", "error")
+        return redirect(url_for('index'))
+    
+    # Store lecturer_id before deleting (needed for redirect)
+    lecturer_id = review.lecturer_id
+    
+    # Delete from database
+    db.session.delete(review)
+    db.session.commit()
+    
+    flash("Review deleted successfully!", "success")
+    return redirect(url_for('reviews.lecturer_profile', lecturer_id=lecturer_id))
