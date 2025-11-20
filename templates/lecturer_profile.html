@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ lecturer.email }} - Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ lecturer.email }}</h2>
+    <p>Lecturer Profile</p>
+    
+    <h3>Reviews ({{ reviews|length }})</h3>
+    
+    {% if reviews %}
+        {% for review in reviews %}
+        <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <p><strong>By:</strong> {{ review.author.email }}</p>
+            <p><strong>Review:</strong> {{ review.review_text }}</p>
+            
+            <p><strong>Ratings:</strong></p>
+            <ul>
+                <li>Clarity: {{ review.rating_clarity }}/5</li>
+                <li>Engagement: {{ review.rating_engagement }}/5</li>
+                <li>Punctuality: {{ review.rating_punctuality }}/5</li>
+                <li>Helpfulness: {{ review.rating_helpfulness }}/5</li>
+                <li>Workload: {{ review.rating_workload }}/5</li>
+            </ul>
+            
+            {% if review.author == current_user %}
+            <a href="{{ url_for('reviews.edit_review', review_id=review.id) }}" style="background-color: #ffc107; color: black; padding: 5px 10px; text-decoration: none; border-radius: 3px;">Edit</a>
+            <a href="{{ url_for('reviews.delete_review', review_id=review.id) }}" 
+               onclick="return confirm('Are you sure you want to delete this review? This cannot be undone.');"
+               style="background-color: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; margin-left: 5px;">Delete</a>
+            {% endif %}
+            
+            <!-- NEW: Display Reply -->
+            {% if review.reply_text %}
+            <div style="margin-top: 15px; padding: 10px; background-color: #f0f0f0; border-left: 3px solid #007bff; border-radius: 3px;">
+                <p><strong>Lecturer's Reply:</strong></p>
+                <p>{{ review.reply_text }}</p>
+                <p style="font-size: 0.9em; color: #666;">Replied on: {{ review.reply_date.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+            {% endif %}
+            
+            <!-- NEW: Reply Form (only for lecturer viewing their own profile) -->
+            {% if current_user.id == lecturer.id and current_user.user_type == 'lecturer' and not review.reply_text %}
+            <form method="POST" action="{{ url_for('reviews.reply_review', review_id=review.id) }}" style="margin-top: 15px;">
+                <textarea name="reply_text" rows="3" placeholder="Write your reply..." style="width: 100%; padding: 8px;" required></textarea>
+                <button type="submit" style="background-color: #007bff; color: white; padding: 8px 15px; border: none; border-radius: 3px; margin-top: 5px; cursor: pointer;">Post Reply</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+    
+    {% if current_user.user_type == 'student' %}
+    <a href="{{ url_for('reviews.create_review', lecturer_id=lecturer.id) }}" style="background-color: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px;">Write a Review</a>
+    {% endif %}
+    
+    <br><br>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</div>
+{% endblock %}

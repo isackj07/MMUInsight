@@ -12,8 +12,12 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
 
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email = request.form.get("email", "").strip()
+    password = request.form.get("password", "")
+
+    if not email or not password:
+        flash("Please fill all fields", "error")
+        return redirect(url_for("auth.login"))
 
     user = User.query.filter_by(email=email).first()
 

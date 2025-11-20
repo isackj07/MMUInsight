@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Review{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Edit Review for {{ review.lecturer.email }}</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="review_text">Review:</label>
+            <textarea id="review_text" name="review_text" rows="5" required>{{ review.review_text }}</textarea>
+        </div>
+        
+        <h3>Rate the Lecturer</h3>
+        
+        <div class="form-group">
+            <label for="rating_clarity">Clarity (1-5):</label>
+            <input type="number" id="rating_clarity" name="rating_clarity" min="1" max="5" value="{{ review.rating_clarity }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="rating_engagement">Engagement (1-5):</label>
+            <input type="number" id="rating_engagement" name="rating_engagement" min="1" max="5" value="{{ review.rating_engagement }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="rating_punctuality">Punctuality (1-5):</label>
+            <input type="number" id="rating_punctuality" name="rating_punctuality" min="1" max="5" value="{{ review.rating_punctuality }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="rating_helpfulness">Helpfulness (1-5):</label>
+            <input type="number" id="rating_helpfulness" name="rating_helpfulness" min="1" max="5" value="{{ review.rating_helpfulness }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="rating_workload">Workload (1-5):</label>
+            <input type="number" id="rating_workload" name="rating_workload" min="1" max="5" value="{{ review.rating_workload }}" required>
+        </div>
+        
+        <button type="submit">Update Review</button>
+        <a href="{{ url_for('reviews.lecturer_profile', lecturer_id=review.lecturer_id) }}">Cancel</a>
+    </form>
+</div>
+{% endblock %}
