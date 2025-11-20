@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from extensions import db
 from models import Review, User
+from datetime import datetime
 
 reviews_bp = Blueprint('reviews', __name__)
 
@@ -101,17 +102,37 @@ def edit_review(review_id):
 def delete_review(review_id):
     review = Review.query.get_or_404(review_id)
     
-    # Security check: only author can delete their own review
     if review.author != current_user:
         flash("You can only delete your own reviews", "error")
         return redirect(url_for('index'))
-    
-    # Store lecturer_id before deleting (needed for redirect)
+
     lecturer_id = review.lecturer_id
     
-    # Delete from database
     db.session.delete(review)
     db.session.commit()
     
     flash("Review deleted successfully!", "success")
     return redirect(url_for('reviews.lecturer_profile', lecturer_id=lecturer_id))
+
+@reviews_bp.route('/review/<int:review_id>/reply', methods=['POST'])
+@login_required
+def reply_review(review_id):
+    review = Review.query.get_or_404(review_id)
+    
+
+    if current_user.id != review.lecturer_id:
+        flash("You can only reply to reviews about you", "error")
+        return redirect(url_for('index'))
+    
+    reply_text = request.form.get('reply_text', '').strip()
+    
+    if not reply_text:
+        flash("Reply cannot be empty", "error")
+        return redirect(url_for('reviews.lecturer_profile', lecturer_id=review.lecturer_id))
+
+    review.reply_text = reply_text
+    review.reply_date = datetime.utcnow()
+    db.session.commit()
+    
+    flash("Reply posted successfully!", "success")
+    return redirect(url_for('reviews.lecturer_profile', lecturer_id=review.lecturer_id))

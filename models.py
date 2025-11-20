@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from extensions import db
+from datetime import datetime
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,3 +32,5 @@ class Review(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     lecturer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=True)
+    reply_text = db.Column(db.Text, nullable=True)
+    reply_date = db.Column(db.DateTime, nullable=True)
