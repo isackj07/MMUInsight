@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from extensions import db
 from models import Review, User
 from datetime import datetime
+from sqlalchemy import func
 
 reviews_bp = Blueprint('reviews', __name__)
 
@@ -60,7 +61,27 @@ def lecturer_profile(lecturer_id):
         return redirect(url_for('index'))
     
     reviews = Review.query.filter_by(lecturer_id=lecturer_id).all()
-    return render_template('lecturer_profile.html', lecturer=lecturer, reviews=reviews)
+    
+    # Calculate category averages
+    if reviews:
+        avg_clarity = db.session.query(func.avg(Review.rating_clarity)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_engagement = db.session.query(func.avg(Review.rating_engagement)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_punctuality = db.session.query(func.avg(Review.rating_punctuality)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_helpfulness = db.session.query(func.avg(Review.rating_helpfulness)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_workload = db.session.query(func.avg(Review.rating_workload)).filter_by(lecturer_id=lecturer_id).scalar()
+        
+        # Round to 1 decimal place
+        averages = {
+            'clarity': round(avg_clarity, 1) if avg_clarity else 0,
+            'engagement': round(avg_engagement, 1) if avg_engagement else 0,
+            'punctuality': round(avg_punctuality, 1) if avg_punctuality else 0,
+            'helpfulness': round(avg_helpfulness, 1) if avg_helpfulness else 0,
+            'workload': round(avg_workload, 1) if avg_workload else 0,
+        }
+    else:
+        averages = None
+    
+    return render_template('lecturer_profile.html', lecturer=lecturer, reviews=reviews, averages=averages)
 
 @reviews_bp.route('/review/<int:review_id>/edit', methods=['GET', 'POST'])
 @login_required
