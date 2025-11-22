@@ -7,6 +7,20 @@
     <h2>{{ lecturer.email }}</h2>
     <p>Lecturer Profile</p>
     
+    <!-- NEW: Display Average Ratings -->
+    {% if averages %}
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #dee2e6;">
+        <h3 style="margin-top: 0;">Average Ratings:</h3>
+        <ul style="list-style: none; padding-left: 0;">
+            <li><strong>Clarity:</strong> {{ averages.clarity }}/5</li>
+            <li><strong>Engagement:</strong> {{ averages.engagement }}/5</li>
+            <li><strong>Punctuality:</strong> {{ averages.punctuality }}/5</li>
+            <li><strong>Helpfulness:</strong> {{ averages.helpfulness }}/5</li>
+            <li><strong>Workload:</strong> {{ averages.workload }}/5</li>
+        </ul>
+    </div>
+    {% endif %}
+    
     <h3>Reviews ({{ reviews|length }})</h3>
     
     {% if reviews %}

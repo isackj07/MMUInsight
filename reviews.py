@@ -62,7 +62,6 @@ def lecturer_profile(lecturer_id):
     
     reviews = Review.query.filter_by(lecturer_id=lecturer_id).all()
     
-    # Calculate category averages
     if reviews:
         avg_clarity = db.session.query(func.avg(Review.rating_clarity)).filter_by(lecturer_id=lecturer_id).scalar()
         avg_engagement = db.session.query(func.avg(Review.rating_engagement)).filter_by(lecturer_id=lecturer_id).scalar()
@@ -70,7 +69,6 @@ def lecturer_profile(lecturer_id):
         avg_helpfulness = db.session.query(func.avg(Review.rating_helpfulness)).filter_by(lecturer_id=lecturer_id).scalar()
         avg_workload = db.session.query(func.avg(Review.rating_workload)).filter_by(lecturer_id=lecturer_id).scalar()
         
-        # Round to 1 decimal place
         averages = {
             'clarity': round(avg_clarity, 1) if avg_clarity else 0,
             'engagement': round(avg_engagement, 1) if avg_engagement else 0,
