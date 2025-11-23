@@ -16,8 +16,20 @@ bcrypt.init_app(app)
 app.register_blueprint(auth_bp)
 
 @app.route("/")
-def index():
+def base():
+    return render_template('base.html')
+
+@app.route("/login.html")
+def login():
+    return render_template('login.html')
+
+@app.route("/base.html")
+def register():
     return render_template('register.html')
+
+@app.route("/Professor-info.html")
+def Professors():
+    return render_template('Professor-info.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
