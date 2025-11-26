@@ -9,10 +9,23 @@
     
     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
         <h3>Overview</h3>
+        {% if averages %}
+        <p style="font-size: 2.5em; margin: 10px 0; color: #007bff;"><strong>{{ overall_rating }}/5</strong></p>
+        <p style="color: #666;">Overall Rating</p>
+        {% endif %}
         <p><strong>Total Reviews:</strong> {{ total_reviews }}</p>
     </div>
     
     {% if averages %}
+    
+    {% if strongest and weakest %}
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 20px;">
+        <h3>Performance Insights</h3>
+        <p style="color: #28a745;"><strong>Strongest Category:</strong> {{ strongest.title() }} ({{ averages[strongest] }}/5)</p>
+        <p style="color: #dc3545;"><strong>Needs Improvement:</strong> {{ weakest.title() }} ({{ averages[weakest] }}/5)</p>
+    </div>
+    {% endif %}
+    
     <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 30px;">
         <h3>Category Averages</h3>
         <table style="width: 100%; border-collapse: collapse;">
@@ -43,57 +56,68 @@
         </table>
     </div>
     
-    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px;">
-        <h3>Performance Chart</h3>
-        <canvas id="ratingsChart" width="400" height="200"></canvas>
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 30px;">
+        <h3>Performance Visual</h3>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Clarity:</strong> {{ averages.clarity }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.clarity / 5) * 100 }}%; background-color: #36a2eb; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.clarity }}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Engagement:</strong> {{ averages.engagement }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.engagement / 5) * 100 }}%; background-color: #4bc0c0; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.engagement }}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Punctuality:</strong> {{ averages.punctuality }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.punctuality / 5) * 100 }}%; background-color: #ffce56; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.punctuality }}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Helpfulness:</strong> {{ averages.helpfulness }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.helpfulness / 5) * 100 }}%; background-color: #9966ff; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.helpfulness }}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Workload:</strong> {{ averages.workload }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.workload / 5) * 100 }}%; background-color: #ff6384; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.workload }}</div>
+            </div>
+        </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('ratingsChart').getContext('2d');
-        const ratingsChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Clarity', 'Engagement', 'Punctuality', 'Helpfulness', 'Workload'],
-                datasets: [{
-                    label: 'Average Rating',
-                    data: [{{ averages.clarity }}, {{ averages.engagement }}, {{ averages.punctuality }}, {{ averages.helpfulness }}, {{ averages.workload }}],
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(255, 206, 86, 0.6)',
-                        'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 99, 132, 0.6)'
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 99, 132, 1)'
-                    ],
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 5,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-    </script>
+    {% if lecturer_stats %}
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 20px;">
+        <h3>Admin View: All Lecturers Comparison</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="border-bottom: 2px solid #dee2e6;">
+                <th style="text-align: left; padding: 10px;">Rank</th>
+                <th style="text-align: left; padding: 10px;">Lecturer</th>
+                <th style="text-align: center; padding: 10px;">Overall Rating</th>
+                <th style="text-align: center; padding: 10px;">Total Reviews</th>
+            </tr>
+            {% for stat in lecturer_stats %}
+            <tr style="border-bottom: 1px solid #dee2e6; {% if stat.id == lecturer.id %}background-color: #fff3cd;{% endif %}">
+                <td style="padding: 10px;">{{ loop.index }}</td>
+                <td style="padding: 10px;">
+                    <a href="{{ url_for('reviews.analytics', lecturer_id=stat.id) }}">{{ stat.email }}</a>
+                </td>
+                <td style="text-align: center; padding: 10px;">{{ stat.overall }}/5</td>
+                <td style="text-align: center; padding: 10px;">{{ stat.total_reviews }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
     
     {% else %}
     <p>No reviews yet. Analytics will appear once students submit reviews.</p>

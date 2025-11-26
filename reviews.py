@@ -161,7 +161,6 @@ def reply_review(review_id):
 def analytics(lecturer_id):
     lecturer = User.query.get_or_404(lecturer_id)
     
-    # Security: Only the lecturer viewing their own OR admin
     if current_user.id != lecturer_id and current_user.user_type != 'admin':
         flash("You don't have permission to view this analytics page", "error")
         return redirect(url_for('index'))
@@ -187,7 +186,48 @@ def analytics(lecturer_id):
             'helpfulness': round(avg_helpfulness, 1) if avg_helpfulness else 0,
             'workload': round(avg_workload, 1) if avg_workload else 0,
         }
+        
+        overall_rating = round((averages['clarity'] + averages['engagement'] + averages['punctuality'] + averages['helpfulness'] + averages['workload']) / 5, 1)
+        
+        strongest = max(averages, key=averages.get)
+        weakest = min(averages, key=averages.get)
     else:
         averages = None
+        overall_rating = 0
+        strongest = None
+        weakest = None
     
-    return render_template('analytics.html', lecturer=lecturer, total_reviews=total_reviews, averages=averages)
+    if current_user.user_type == 'admin':
+        all_lecturers = User.query.filter_by(user_type='lecturer').all()
+        lecturer_stats = []
+        
+        for lect in all_lecturers:
+            lect_reviews = Review.query.filter_by(lecturer_id=lect.id).all()
+            if lect_reviews:
+                lect_avg_clarity = db.session.query(func.avg(Review.rating_clarity)).filter_by(lecturer_id=lect.id).scalar()
+                lect_avg_engagement = db.session.query(func.avg(Review.rating_engagement)).filter_by(lecturer_id=lect.id).scalar()
+                lect_avg_punctuality = db.session.query(func.avg(Review.rating_punctuality)).filter_by(lecturer_id=lect.id).scalar()
+                lect_avg_helpfulness = db.session.query(func.avg(Review.rating_helpfulness)).filter_by(lecturer_id=lect.id).scalar()
+                lect_avg_workload = db.session.query(func.avg(Review.rating_workload)).filter_by(lecturer_id=lect.id).scalar()
+                
+                lect_overall = round((lect_avg_clarity + lect_avg_engagement + lect_avg_punctuality + lect_avg_helpfulness + lect_avg_workload) / 5, 1)
+                
+                lecturer_stats.append({
+                    'email': lect.email,
+                    'id': lect.id,
+                    'overall': lect_overall,
+                    'total_reviews': len(lect_reviews)
+                })
+        
+        lecturer_stats.sort(key=lambda x: x['overall'], reverse=True)
+    else:
+        lecturer_stats = None
+    
+    return render_template('analytics.html', 
+                         lecturer=lecturer, 
+                         total_reviews=total_reviews, 
+                         averages=averages,
+                         overall_rating=overall_rating,
+                         strongest=strongest,
+                         weakest=weakest,
+                         lecturer_stats=lecturer_stats)

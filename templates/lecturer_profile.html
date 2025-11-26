@@ -21,6 +21,10 @@
     </div>
     {% endif %}
     
+    {% if (current_user.id == lecturer.id and current_user.user_type == 'lecturer') or current_user.user_type == 'admin' %}
+    <a href="{{ url_for('reviews.analytics', lecturer_id=lecturer.id) }}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; display: inline-block; margin-bottom: 20px;">📊 View Analytics Dashboard</a>
+    {% endif %}
+
     <h3>Reviews ({{ reviews|length }})</h3>
     
     {% if reviews %}
@@ -70,9 +74,6 @@
     <a href="{{ url_for('reviews.create_review', lecturer_id=lecturer.id) }}" style="background-color: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px;">Write a Review</a>
     {% endif %}
     
-    {% if current_user.id == lecturer.id and current_user.user_type == 'lecturer' %}
-    <a href="{{ url_for('reviews.analytics', lecturer_id=lecturer.id) }}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; display: inline-block; margin-bottom: 20px;">📊 View Analytics Dashboard</a>
-    {% endif %}
     
     <br><br>
     <a href="{{ url_for('index') }}">Back to Home</a>
