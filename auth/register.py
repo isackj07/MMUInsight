@@ -18,11 +18,12 @@ def register():
     if not email or not password or not confirm_password or not user_type:
         return "Error: all fields are required"
 
-    if not (
-        email.endswith("@student.mmu.edu.my")
-        or email.endswith("@mmu.edu.my")
-    ):
-        return "Error: email must be an MMU address"
+    if email.endswith("@student.mmu.edu.my"):
+        user_type = "student"
+    elif email.endswith("@mmu.edu.my"):
+        user_type = "lecturer"
+    else:
+        return "Error: email must be an MMU student/lecturer address"
 
     if password != confirm_password:
         return "Error: passwords do not match"
