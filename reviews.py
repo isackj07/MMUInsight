@@ -155,3 +155,39 @@ def reply_review(review_id):
     
     flash("Reply posted successfully!", "success")
     return redirect(url_for('reviews.lecturer_profile', lecturer_id=review.lecturer_id))
+
+@reviews_bp.route('/analytics/<int:lecturer_id>')
+@login_required
+def analytics(lecturer_id):
+    lecturer = User.query.get_or_404(lecturer_id)
+    
+    # Security: Only the lecturer viewing their own OR admin
+    if current_user.id != lecturer_id and current_user.user_type != 'admin':
+        flash("You don't have permission to view this analytics page", "error")
+        return redirect(url_for('index'))
+    
+    if lecturer.user_type != 'lecturer':
+        flash("Invalid lecturer", "error")
+        return redirect(url_for('index'))
+    
+    reviews = Review.query.filter_by(lecturer_id=lecturer_id).all()
+    total_reviews = len(reviews)
+    
+    if reviews:
+        avg_clarity = db.session.query(func.avg(Review.rating_clarity)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_engagement = db.session.query(func.avg(Review.rating_engagement)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_punctuality = db.session.query(func.avg(Review.rating_punctuality)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_helpfulness = db.session.query(func.avg(Review.rating_helpfulness)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_workload = db.session.query(func.avg(Review.rating_workload)).filter_by(lecturer_id=lecturer_id).scalar()
+        
+        averages = {
+            'clarity': round(avg_clarity, 1) if avg_clarity else 0,
+            'engagement': round(avg_engagement, 1) if avg_engagement else 0,
+            'punctuality': round(avg_punctuality, 1) if avg_punctuality else 0,
+            'helpfulness': round(avg_helpfulness, 1) if avg_helpfulness else 0,
+            'workload': round(avg_workload, 1) if avg_workload else 0,
+        }
+    else:
+        averages = None
+    
+    return render_template('analytics.html', lecturer=lecturer, total_reviews=total_reviews, averages=averages)

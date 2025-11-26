@@ -7,7 +7,7 @@
     <h2>{{ lecturer.email }}</h2>
     <p>Lecturer Profile</p>
     
-    <!-- NEW: Display Average Ratings -->
+
     {% if averages %}
     <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #dee2e6;">
         <h3 style="margin-top: 0;">Average Ratings:</h3>
@@ -45,7 +45,7 @@
                style="background-color: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; margin-left: 5px;">Delete</a>
             {% endif %}
             
-            <!-- NEW: Display Reply -->
+          
             {% if review.reply_text %}
             <div style="margin-top: 15px; padding: 10px; background-color: #f0f0f0; border-left: 3px solid #007bff; border-radius: 3px;">
                 <p><strong>Lecturer's Reply:</strong></p>
@@ -54,7 +54,6 @@
             </div>
             {% endif %}
             
-            <!-- NEW: Reply Form (only for lecturer viewing their own profile) -->
             {% if current_user.id == lecturer.id and current_user.user_type == 'lecturer' and not review.reply_text %}
             <form method="POST" action="{{ url_for('reviews.reply_review', review_id=review.id) }}" style="margin-top: 15px;">
                 <textarea name="reply_text" rows="3" placeholder="Write your reply..." style="width: 100%; padding: 8px;" required></textarea>
@@ -69,6 +68,10 @@
     
     {% if current_user.user_type == 'student' %}
     <a href="{{ url_for('reviews.create_review', lecturer_id=lecturer.id) }}" style="background-color: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px;">Write a Review</a>
+    {% endif %}
+    
+    {% if current_user.id == lecturer.id and current_user.user_type == 'lecturer' %}
+    <a href="{{ url_for('reviews.analytics', lecturer_id=lecturer.id) }}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; display: inline-block; margin-bottom: 20px;">📊 View Analytics Dashboard</a>
     {% endif %}
     
     <br><br>

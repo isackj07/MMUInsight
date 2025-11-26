@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics - {{ lecturer.email }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Analytics Dashboard</h2>
+    <h3>{{ lecturer.email }}</h3>
+    
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
+        <h3>Overview</h3>
+        <p><strong>Total Reviews:</strong> {{ total_reviews }}</p>
+    </div>
+    
+    {% if averages %}
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 30px;">
+        <h3>Category Averages</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="border-bottom: 2px solid #dee2e6;">
+                <th style="text-align: left; padding: 10px;">Category</th>
+                <th style="text-align: center; padding: 10px;">Average Rating</th>
+            </tr>
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">Clarity</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.clarity }}/5</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">Engagement</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.engagement }}/5</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">Punctuality</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.punctuality }}/5</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">Helpfulness</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.helpfulness }}/5</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">Workload</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.workload }}/5</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px;">
+        <h3>Performance Chart</h3>
+        <canvas id="ratingsChart" width="400" height="200"></canvas>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('ratingsChart').getContext('2d');
+        const ratingsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Clarity', 'Engagement', 'Punctuality', 'Helpfulness', 'Workload'],
+                datasets: [{
+                    label: 'Average Rating',
+                    data: [{{ averages.clarity }}, {{ averages.engagement }}, {{ averages.punctuality }}, {{ averages.helpfulness }}, {{ averages.workload }}],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+    
+    {% else %}
+    <p>No reviews yet. Analytics will appear once students submit reviews.</p>
+    {% endif %}
+    
+    <br>
+    <a href="{{ url_for('reviews.lecturer_profile', lecturer_id=lecturer.id) }}">Back to Profile</a>
+</div>
+{% endblock %}
