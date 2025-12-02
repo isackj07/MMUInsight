@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
 from . import auth_bp
 from auth.decorators import login_required, admin_required
-from models import User
+from models import User, Report, Review
 from extensions import db
 
 @auth_bp.route("/dashboard")
@@ -16,6 +16,8 @@ def admin_dashboard():
     total_users = len(users)
     verified_users = sum(1 for u in users if u.is_verified)
     admin_count = sum(1 for u in users if u.user_type == "admin")
+    
+    pending_reports = Report.query.filter_by(status='pending').count()
 
     return render_template(
         "admin_dashboard.html",
@@ -23,6 +25,7 @@ def admin_dashboard():
         total_users=total_users,
         verified_users=verified_users,
         admin_count=admin_count,
+        pending_reports=pending_reports,
     )
 
 @auth_bp.route("/admin/users")
@@ -75,3 +78,30 @@ def admin_delete_user(user_id):
         db.session.delete(user)
         db.session.commit()
     return redirect(url_for("auth.admin_users"))
+
+@auth_bp.route("/admin/reports")
+@admin_required
+def admin_reports():
+    reports = Report.query.order_by(Report.report_date.desc()).all()
+    return render_template("admin_reports.html", reports=reports)
+
+@auth_bp.route("/admin/report/<int:report_id>/dismiss")
+@admin_required
+def admin_dismiss_report(report_id):
+    report = Report.query.get(report_id)
+    if report:
+        report.status = 'dismissed'
+        db.session.commit()
+        flash("Report dismissed", "success")
+    return redirect(url_for("auth.admin_reports"))
+
+@auth_bp.route("/admin/report/<int:report_id>/delete-review")
+@admin_required
+def admin_delete_reported_review(report_id):
+    report = Report.query.get(report_id)
+    if report:
+        review = report.review
+        db.session.delete(review)
+        db.session.commit()
+        flash("Review deleted", "success")
+    return redirect(url_for("auth.admin_reports"))
