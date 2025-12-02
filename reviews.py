@@ -26,11 +26,11 @@ def create_review(lecturer_id):
     rating_clarity = int(request.form.get('rating_clarity', 0))
     rating_engagement = int(request.form.get('rating_engagement', 0))
     rating_punctuality = int(request.form.get('rating_punctuality', 0))
-    rating_helpfulness = int(request.form.get('rating_helpfulness', 0))
-    rating_workload = int(request.form.get('rating_workload', 0))
+    rating_responsiveness = int(request.form.get('rating_responsiveness', 0))
+    rating_fairness = int(request.form.get('rating_fairness', 0))
     subject_id = request.form.get('subject_id')
     
-    if not review_text or not all([rating_clarity, rating_engagement, rating_punctuality, rating_helpfulness, rating_workload]):
+    if not review_text or not all([rating_clarity, rating_engagement, rating_punctuality, rating_responsiveness, rating_fairness]):
         flash("Please fill all fields", "error")
         return redirect(url_for('reviews.create_review', lecturer_id=lecturer_id))
     
@@ -39,8 +39,8 @@ def create_review(lecturer_id):
         rating_clarity=rating_clarity,
         rating_engagement=rating_engagement,
         rating_punctuality=rating_punctuality,
-        rating_helpfulness=rating_helpfulness,
-        rating_workload=rating_workload,
+        rating_responsiveness=rating_responsiveness,
+        rating_fairness=rating_fairness,
         user_id=current_user.id,
         lecturer_id=lecturer_id,
         subject_id=subject_id if subject_id else None
@@ -66,15 +66,15 @@ def lecturer_profile(lecturer_id):
         avg_clarity = db.session.query(func.avg(Review.rating_clarity)).filter_by(lecturer_id=lecturer_id).scalar()
         avg_engagement = db.session.query(func.avg(Review.rating_engagement)).filter_by(lecturer_id=lecturer_id).scalar()
         avg_punctuality = db.session.query(func.avg(Review.rating_punctuality)).filter_by(lecturer_id=lecturer_id).scalar()
-        avg_helpfulness = db.session.query(func.avg(Review.rating_helpfulness)).filter_by(lecturer_id=lecturer_id).scalar()
-        avg_workload = db.session.query(func.avg(Review.rating_workload)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_responsiveness = db.session.query(func.avg(Review.rating_responsiveness)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_fairness = db.session.query(func.avg(Review.rating_fairness)).filter_by(lecturer_id=lecturer_id).scalar()
         
         averages = {
             'clarity': round(avg_clarity, 1) if avg_clarity else 0,
             'engagement': round(avg_engagement, 1) if avg_engagement else 0,
             'punctuality': round(avg_punctuality, 1) if avg_punctuality else 0,
-            'helpfulness': round(avg_helpfulness, 1) if avg_helpfulness else 0,
-            'workload': round(avg_workload, 1) if avg_workload else 0,
+            'responsiveness': round(avg_responsiveness, 1) if avg_responsiveness else 0,
+            'fairness': round(avg_fairness, 1) if avg_fairness else 0,
         }
     else:
         averages = None
@@ -97,10 +97,10 @@ def edit_review(review_id):
     rating_clarity = int(request.form.get('rating_clarity', 0))
     rating_engagement = int(request.form.get('rating_engagement', 0))
     rating_punctuality = int(request.form.get('rating_punctuality', 0))
-    rating_helpfulness = int(request.form.get('rating_helpfulness', 0))
-    rating_workload = int(request.form.get('rating_workload', 0))
+    rating_responsiveness = int(request.form.get('rating_responsiveness', 0))
+    rating_fairness = int(request.form.get('rating_fairness', 0))
     
-    if not review_text or not all([rating_clarity, rating_engagement, rating_punctuality, rating_helpfulness, rating_workload]):
+    if not review_text or not all([rating_clarity, rating_engagement, rating_punctuality, rating_responsiveness, rating_fairness]):
         flash("Please fill all fields", "error")
         return redirect(url_for('reviews.edit_review', review_id=review_id))
     
@@ -108,8 +108,8 @@ def edit_review(review_id):
     review.rating_clarity = rating_clarity
     review.rating_engagement = rating_engagement
     review.rating_punctuality = rating_punctuality
-    review.rating_helpfulness = rating_helpfulness
-    review.rating_workload = rating_workload
+    review.rating_responsiveness = rating_responsiveness
+    review.rating_fairness = rating_fairness
     
     db.session.commit()
     
@@ -138,7 +138,6 @@ def delete_review(review_id):
 def reply_review(review_id):
     review = Review.query.get_or_404(review_id)
     
-
     if current_user.id != review.lecturer_id:
         flash("You can only reply to reviews about you", "error")
         return redirect(url_for('index'))
@@ -176,18 +175,18 @@ def analytics(lecturer_id):
         avg_clarity = db.session.query(func.avg(Review.rating_clarity)).filter_by(lecturer_id=lecturer_id).scalar()
         avg_engagement = db.session.query(func.avg(Review.rating_engagement)).filter_by(lecturer_id=lecturer_id).scalar()
         avg_punctuality = db.session.query(func.avg(Review.rating_punctuality)).filter_by(lecturer_id=lecturer_id).scalar()
-        avg_helpfulness = db.session.query(func.avg(Review.rating_helpfulness)).filter_by(lecturer_id=lecturer_id).scalar()
-        avg_workload = db.session.query(func.avg(Review.rating_workload)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_responsiveness = db.session.query(func.avg(Review.rating_responsiveness)).filter_by(lecturer_id=lecturer_id).scalar()
+        avg_fairness = db.session.query(func.avg(Review.rating_fairness)).filter_by(lecturer_id=lecturer_id).scalar()
         
         averages = {
             'clarity': round(avg_clarity, 1) if avg_clarity else 0,
             'engagement': round(avg_engagement, 1) if avg_engagement else 0,
             'punctuality': round(avg_punctuality, 1) if avg_punctuality else 0,
-            'helpfulness': round(avg_helpfulness, 1) if avg_helpfulness else 0,
-            'workload': round(avg_workload, 1) if avg_workload else 0,
+            'responsiveness': round(avg_responsiveness, 1) if avg_responsiveness else 0,
+            'fairness': round(avg_fairness, 1) if avg_fairness else 0,
         }
         
-        overall_rating = round((averages['clarity'] + averages['engagement'] + averages['punctuality'] + averages['helpfulness'] + averages['workload']) / 5, 1)
+        overall_rating = round((averages['clarity'] + averages['engagement'] + averages['punctuality'] + averages['responsiveness'] + averages['fairness']) / 5, 1)
         
         strongest = max(averages, key=averages.get)
         weakest = min(averages, key=averages.get)
@@ -207,10 +206,10 @@ def analytics(lecturer_id):
                 lect_avg_clarity = db.session.query(func.avg(Review.rating_clarity)).filter_by(lecturer_id=lect.id).scalar()
                 lect_avg_engagement = db.session.query(func.avg(Review.rating_engagement)).filter_by(lecturer_id=lect.id).scalar()
                 lect_avg_punctuality = db.session.query(func.avg(Review.rating_punctuality)).filter_by(lecturer_id=lect.id).scalar()
-                lect_avg_helpfulness = db.session.query(func.avg(Review.rating_helpfulness)).filter_by(lecturer_id=lect.id).scalar()
-                lect_avg_workload = db.session.query(func.avg(Review.rating_workload)).filter_by(lecturer_id=lect.id).scalar()
+                lect_avg_responsiveness = db.session.query(func.avg(Review.rating_responsiveness)).filter_by(lecturer_id=lect.id).scalar()
+                lect_avg_fairness = db.session.query(func.avg(Review.rating_fairness)).filter_by(lecturer_id=lect.id).scalar()
                 
-                lect_overall = round((lect_avg_clarity + lect_avg_engagement + lect_avg_punctuality + lect_avg_helpfulness + lect_avg_workload) / 5, 1)
+                lect_overall = round((lect_avg_clarity + lect_avg_engagement + lect_avg_punctuality + lect_avg_responsiveness + lect_avg_fairness) / 5, 1)
                 
                 lecturer_stats.append({
                     'email': lect.email,

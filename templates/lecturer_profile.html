@@ -15,8 +15,8 @@
             <li><strong>Clarity:</strong> {{ averages.clarity }}/5</li>
             <li><strong>Engagement:</strong> {{ averages.engagement }}/5</li>
             <li><strong>Punctuality:</strong> {{ averages.punctuality }}/5</li>
-            <li><strong>Helpfulness:</strong> {{ averages.helpfulness }}/5</li>
-            <li><strong>Workload:</strong> {{ averages.workload }}/5</li>
+            <li><strong>Responsiveness:</strong> {{ averages.responsiveness }}/5</li>
+            <li><strong>Fairness:</strong> {{ averages.fairness }}/5</li>
         </ul>
     </div>
     {% endif %}
@@ -38,8 +38,8 @@
                 <li>Clarity: {{ review.rating_clarity }}/5</li>
                 <li>Engagement: {{ review.rating_engagement }}/5</li>
                 <li>Punctuality: {{ review.rating_punctuality }}/5</li>
-                <li>Helpfulness: {{ review.rating_helpfulness }}/5</li>
-                <li>Workload: {{ review.rating_workload }}/5</li>
+                <li>Responsiveness: {{ review.rating_responsiveness }}/5</li>
+                <li>Fairness: {{ review.rating_fairness }}/5</li>
             </ul>
             
             {% if review.author == current_user %}

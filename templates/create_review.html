@@ -30,15 +30,16 @@
         </div>
         
         <div class="form-group">
-            <label for="rating_helpfulness">Helpfulness (1-5):</label>
-            <input type="number" id="rating_helpfulness" name="rating_helpfulness" min="1" max="5" required>
+            <label for="rating_responsiveness">Responsiveness (1-5):</label>
+            <input type="number" id="rating_responsiveness" name="rating_responsiveness" min="1" max="5" required>
+            <small>Replies to emails/questions promptly</small>
         </div>
         
         <div class="form-group">
-            <label for="rating_workload">Workload (1-5):</label>
-            <input type="number" id="rating_workload" name="rating_workload" min="1" max="5" required>
+            <label for="rating_fairness">Fairness (1-5):</label>
+            <input type="number" id="rating_fairness" name="rating_fairness" min="1" max="5" required>
+            <small>Assessments match taught content</small>
         </div>
-        
         
         <button type="submit">Submit Review</button>
         <a href="{{ url_for('index') }}">Cancel</a>
