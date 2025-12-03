@@ -26,5 +26,5 @@ def login():
 
     login_user(user, remember=remember)
 
-    return f"Login OK for {user.email}"
+    return redirect(url_for('auth.dashboard'))
 
