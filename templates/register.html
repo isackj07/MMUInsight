@@ -1,28 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-</head>
-<body>
-    <h1>Register</h1>
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Register</h2>
 
     <form method="POST" action="/register">
-        <label>Email:</label><br>
-        <input type="email" name="email" required><br><br>
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="email" required>
+        </div>
 
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" name="password" required>
+        </div>
 
-        <label>Confirm Password:</label><br>
-        <input type="password" name="confirm_password" required><br><br>
+        <div class="form-group">
+            <label>Confirm Password:</label>
+            <input type="password" name="confirm_password" required>
+        </div>
 
-        <label>User Type:</label><br>
-        <select name="user_type" required>
-            <option value="student">Student</option>
-            <option value="lecturer">Lecturer</option>
-        </select><br><br>
+        <div class="form-group">
+            <label>User Type:</label>
+            <select name="user_type" required>
+                <option value="student">Student</option>
+                <option value="lecturer">Lecturer</option>
+            </select>
+        </div>
 
         <button type="submit">Register</button>
+        <a href="{{ url_for('auth.login') }}">Already have an account? Login</a>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

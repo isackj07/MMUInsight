@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Reports{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>🚩 Reported Reviews</h2>
+    
+    {% if reports %}
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                <th style="padding: 10px; text-align: left;">Review</th>
+                <th style="padding: 10px; text-align: left;">Reporter</th>
+                <th style="padding: 10px; text-align: left;">Reason</th>
+                <th style="padding: 10px; text-align: center;">Status</th>
+                <th style="padding: 10px; text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">
+                    <strong>By:</strong> {{ report.review.author.email }}<br>
+                    "{{ report.review.review_text[:100] }}..."
+                </td>
+                <td style="padding: 10px;">{{ report.reporter.email }}</td>
+                <td style="padding: 10px;">{{ report.reason }}</td>
+                <td style="padding: 10px; text-align: center;">
+                    <span style="padding: 3px 8px; border-radius: 3px; background-color: {% if report.status == 'pending' %}#ffc107{% else %}#28a745{% endif %}; color: white; font-size: 0.9em;">
+                        {{ report.status }}
+                    </span>
+                </td>
+                <td style="padding: 10px; text-align: center;">
+                    {% if report.status == 'pending' %}
+                    <a href="{{ url_for('auth.admin_delete_reported_review', report_id=report.id) }}" 
+                       onclick="return confirm('Delete this review permanently?');"
+                       style="background-color: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 0.9em; display: inline-block;">Delete Review</a>
+                    <a href="{{ url_for('auth.admin_dismiss_report', report_id=report.id) }}" 
+                       style="background-color: #6c757d; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 0.9em; margin-left: 10px; display: inline-block;">Dismiss</a>
+                    {% else %}
+                    <span style="color: #6c757d;">Resolved</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No reports yet.</p>
+    {% endif %}
+    
+    <br>
+    <a href="{{ url_for('auth.admin_dashboard') }}">Back to Admin Dashboard</a>
+</div>
+{% endblock %}
