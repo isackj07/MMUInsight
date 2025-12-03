@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    {% if user %}
+        <p>Welcome, {{ user.email }}</p>
+        <p>Role: {{ user.user_type }}</p>
+        <p>Reviews written: {{ reviews_count }}</p>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    {% else %}
+        <p>You are not logged in.</p>
+        <a href="{{ url_for('auth.login') }}">Login</a>
+    {% endif %}
+</body>
+</html>

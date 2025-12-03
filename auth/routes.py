@@ -7,7 +7,10 @@ from extensions import db
 @auth_bp.route("/dashboard")
 @login_required
 def dashboard():
-    return "Student dashboard (placeholder - requires login)"
+    from flask import session
+    user = User.query.get(session.get("user_id")) if session.get("user_id") else None
+    reviews_count = len(user.reviews_written) if user else 0
+    return render_template("dashboard.html", user=user, reviews_count=reviews_count)
 
 @auth_bp.route("/admin")
 @admin_required

@@ -14,4 +14,3 @@ def verify(token):
     db.session.commit()
 
     return "Your account has been verified. You can now log in."
-  

@@ -1,11 +1,10 @@
-from flask import Flask, get_flashed_messages, render_template_string, render_template
-from flask_login import LoginManager, current_user
+from flask import Flask, get_flashed_messages, render_template_string, render_template, session
 import os
 
-from extensions import db, bcrypt
+from extensions import db, bcrypt, login_manager
 from models import User, Subject, Review
 from auth import auth_bp
-from reviews import reviews_bp
+from auth.reviews import reviews_bp
 
 app = Flask(__name__)
 
@@ -17,10 +16,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 bcrypt.init_app(app)
-
-login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'auth.login'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -31,10 +27,15 @@ app.register_blueprint(reviews_bp)
 
 @app.route("/", methods=["GET"])
 def index():
+    from flask_login import current_user
+    messages_html = ""
+    for category, message in get_flashed_messages(with_categories=True):
+        messages_html += f'<div class="alert alert-{category}">{message}</div>'
+
     if current_user.is_authenticated:
         lecturers = User.query.filter_by(user_type='lecturer').all()
-        return render_template('index.html', lecturers=lecturers)
-    return render_template('index.html')
+        return render_template('index.html', lecturers=lecturers, messages_html=messages_html)
+    return render_template('index.html', messages_html=messages_html)
 
 @app.get("/test")
 def test():

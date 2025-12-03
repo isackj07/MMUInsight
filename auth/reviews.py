@@ -9,10 +9,10 @@ reviews_bp = Blueprint('reviews', __name__)
 @reviews_bp.route('/create_review/<int:lecturer_id>', methods=['GET', 'POST'])
 @login_required
 def create_review(lecturer_id):
-    if current_user.user_type != 'student':
+    if not current_user.is_authenticated or current_user.user_type != 'student':
         flash("Only students can write reviews", "error")
         return redirect(url_for('index'))
-    
+
     lecturer = User.query.get_or_404(lecturer_id)
     if lecturer.user_type != 'lecturer':
         flash("Invalid lecturer", "error")
@@ -66,8 +66,7 @@ def lecturer_profile(lecturer_id):
 @login_required
 def edit_review(review_id):
     review = Review.query.get_or_404(review_id)
-    
-    if review.author != current_user:
+    if review.user_id != current_user.id:
         flash("You can only edit your own reviews", "error")
         return redirect(url_for('index'))
     
@@ -101,8 +100,8 @@ def edit_review(review_id):
 @login_required
 def delete_review(review_id):
     review = Review.query.get_or_404(review_id)
-    
-    if review.author != current_user:
+    user_id = session.get("user_id")
+    if review.user_id != user_id:
         flash("You can only delete your own reviews", "error")
         return redirect(url_for('index'))
 
@@ -118,9 +117,9 @@ def delete_review(review_id):
 @login_required
 def reply_review(review_id):
     review = Review.query.get_or_404(review_id)
-    
+    user_id = session.get("user_id")
 
-    if current_user.id != review.lecturer_id:
+    if user_id != review.lecturer_id:
         flash("You can only reply to reviews about you", "error")
         return redirect(url_for('index'))
     

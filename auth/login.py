@@ -1,4 +1,5 @@
-from flask import render_template, request, session, redirect, url_for
+from flask import render_template, request, redirect, url_for
+from flask_login import login_user
 from . import auth_bp
 from extensions import bcrypt
 from models import User
@@ -10,6 +11,7 @@ def login():
 
     email = request.form.get("email")
     password = request.form.get("password")
+    remember = request.form.get("remember", False)
 
     user = User.query.filter_by(email=email).first()
 
@@ -22,8 +24,7 @@ def login():
     if not bcrypt.check_password_hash(user.password_hash, password):
         return "Error: invalid email or password"
 
-    session["user_id"] = user.id
-    session["user_type"] = user.user_type
+    login_user(user, remember=remember)
 
-    return redirect(url_for("auth.dashboard"))
+    return f"Login OK for {user.email}"
 
