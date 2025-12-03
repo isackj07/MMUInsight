@@ -4,10 +4,6 @@ from auth.decorators import login_required, admin_required
 from models import User
 from extensions import db
 
-@auth_bp.route("/")
-def index():
-    return "MMUInsight home (placeholder)"
-
 @auth_bp.route("/dashboard")
 @login_required
 def dashboard():

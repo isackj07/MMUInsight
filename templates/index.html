@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MMUInsight</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .alert { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .alert-error { background-color: #f8d7da; color: #721c24; }
+        .alert-success { background-color: #d4edda; color: #155724; }
+        a { color: #007bff; text-decoration: none; }
+        .login-links { text-align: center; padding: 40px; }
+        .login-links a { margin: 10px; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block; }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if current_user.is_authenticated %}
+        <h1>MMUInsight</h1>
+        <p>Logged in as: {{ current_user.email }} ({{ current_user.user_type }})</p>
+        
+        <h2>Lecturers:</h2>
+        <ul>
+            {% for lecturer in lecturers %}
+            <li><a href="/lecturer/{{ lecturer.id }}">{{ lecturer.email }}</a></li>
+            {% endfor %}
+        </ul>
+        
+        <br>
+        <a href="/logout">Logout</a>
+    {% else %}
+        <div class="login-links">
+            <h1>Welcome to MMUInsight</h1>
+            <p>Review and rate your lecturers</p>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    {% endif %}
+</body>
+</html>
