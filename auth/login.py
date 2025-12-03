@@ -1,4 +1,4 @@
-from flask import render_template, request, session
+from flask import render_template, request, session, redirect, url_for
 from . import auth_bp
 from extensions import bcrypt
 from models import User
@@ -25,5 +25,5 @@ def login():
     session["user_id"] = user.id
     session["user_type"] = user.user_type
 
-    return f"Login OK for {user.email}"
+    return redirect(url_for("auth.dashboard"))
 
