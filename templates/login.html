@@ -1,36 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{% block title %}Login{% endblock %}</title>
-</head>
-<body>
-    {% block content %}
-    <div class="container">
-        <h2>Login</h2>
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Login</h2>
+    
+    <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
         
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
         
-        <form method="POST" action="{{ url_for('auth.login') }}">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
-            <button type="submit">Login</button>
-            <a href="{{ url_for('auth.register') }}">Don't have an account? Register</a>
-        </form>
-    </div>
-    {% endblock %}
-</body>
-</html>
+        <button type="submit">Login</button>
+        <a href="{{ url_for('auth.register') }}">Don't have an account? Register</a>
+    </form>
+</div>
+{% endblock %}

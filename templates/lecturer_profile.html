@@ -7,7 +7,6 @@
     <h2>{{ lecturer.email }}</h2>
     <p>Lecturer Profile</p>
     
-
     {% if averages %}
     <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #dee2e6;">
         <h3 style="margin-top: 0;">Average Ratings:</h3>
@@ -23,6 +22,10 @@
     
     {% if (current_user.id == lecturer.id and current_user.user_type == 'lecturer') or current_user.user_type == 'admin' %}
     <a href="{{ url_for('reviews.analytics', lecturer_id=lecturer.id) }}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; display: inline-block; margin-bottom: 20px;">📊 View Analytics Dashboard</a>
+    {% endif %}
+    
+    {% if current_user.user_type == 'student' %}
+    <a href="{{ url_for('reviews.student_analytics', lecturer_id=lecturer.id) }}" style="background-color: #17a2b8; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; display: inline-block; margin-bottom: 20px;">📈 View Student Analytics</a>
     {% endif %}
 
     <h3>Reviews ({{ reviews|length }})</h3>
@@ -49,18 +52,36 @@
                style="background-color: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; margin-left: 5px;">Delete</a>
             {% endif %}
             
-          
-            {% if review.reply_text %}
-            <div style="margin-top: 15px; padding: 10px; background-color: #f0f0f0; border-left: 3px solid #007bff; border-radius: 3px;">
-                <p><strong>Lecturer's Reply:</strong></p>
-                <p>{{ review.reply_text }}</p>
-                <p style="font-size: 0.9em; color: #666;">Replied on: {{ review.reply_date.strftime('%Y-%m-%d %H:%M') }}</p>
+            {% if current_user.user_type == 'student' and review.author != current_user %}
+            <button onclick="document.getElementById('report-form-{{ review.id }}').style.display='block'" style="background-color: #6c757d; color: white; padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; margin-left: 5px;">🚩 Report</button>
+            <div id="report-form-{{ review.id }}" style="display: none; margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 3px;">
+                <form method="POST" action="{{ url_for('reviews.report_review', review_id=review.id) }}">
+                    <textarea name="reason" rows="2" placeholder="Why are you reporting this review?" style="width: 100%; padding: 8px; margin-bottom: 5px;" required></textarea>
+                    <button type="submit" style="background-color: #dc3545; color: white; padding: 5px 15px; border: none; border-radius: 3px; cursor: pointer;">Submit Report</button>
+                    <button type="button" onclick="document.getElementById('report-form-{{ review.id }}').style.display='none'" style="background-color: #6c757d; color: white; padding: 5px 15px; border: none; border-radius: 3px; cursor: pointer; margin-left: 5px;">Cancel</button>
+                </form>
             </div>
             {% endif %}
             
-            {% if current_user.id == lecturer.id and current_user.user_type == 'lecturer' and not review.reply_text %}
-            <form method="POST" action="{{ url_for('reviews.reply_review', review_id=review.id) }}" style="margin-top: 15px;">
-                <textarea name="reply_text" rows="3" placeholder="Write your reply..." style="width: 100%; padding: 8px;" required></textarea>
+            {% if review.replies %}
+            <div style="margin-top: 20px; padding-left: 20px; border-left: 3px solid #dee2e6;">
+                <h4 style="margin-bottom: 10px;">💬 Discussion Thread:</h4>
+                {% for reply in review.replies %}
+                <div style="margin-bottom: 15px; padding: 10px; background-color: {% if reply.author.user_type == 'lecturer' %}#e7f3ff{% else %}#f8f9fa{% endif %}; border-radius: 3px;">
+                    <p style="margin: 0; font-weight: bold; color: {% if reply.author.user_type == 'lecturer' %}#007bff{% else %}#333{% endif %};">
+                        {{ reply.author.email }} 
+                        {% if reply.author.user_type == 'lecturer' %}(Lecturer){% endif %}
+                    </p>
+                    <p style="margin: 5px 0;">{{ reply.reply_text }}</p>
+                    <p style="font-size: 0.9em; color: #666; margin: 0;">{{ reply.reply_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if (current_user.id == lecturer.id and current_user.user_type == 'lecturer') or (current_user.user_type == 'student' and review.author == current_user) %}
+            <form method="POST" action="{{ url_for('reviews.add_reply', review_id=review.id) }}" style="margin-top: 15px;">
+                <textarea name="reply_text" rows="2" placeholder="Write a reply..." style="width: 100%; padding: 8px;" required></textarea>
                 <button type="submit" style="background-color: #007bff; color: white; padding: 8px 15px; border: none; border-radius: 3px; margin-top: 5px; cursor: pointer;">Post Reply</button>
             </form>
             {% endif %}
@@ -73,7 +94,6 @@
     {% if current_user.user_type == 'student' %}
     <a href="{{ url_for('reviews.create_review', lecturer_id=lecturer.id) }}" style="background-color: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 3px;">Write a Review</a>
     {% endif %}
-    
     
     <br><br>
     <a href="{{ url_for('index') }}">Back to Home</a>
