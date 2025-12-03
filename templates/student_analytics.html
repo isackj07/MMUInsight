@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Analytics - {{ lecturer.email }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Student Analytics Dashboard</h2>
+    <h3>{{ lecturer.email }}</h3>
+    
+
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
+        <h3>Overview</h3>
+        {% if averages %}
+        <p style="font-size: 2.5em; margin: 10px 0; color: #17a2b8;"><strong>{{ overall_rating }}/5</strong></p>
+        <p style="color: #666;">Overall Rating</p>
+        {% endif %}
+        <p><strong>Total Reviews:</strong> {{ total_reviews }}</p>
+    </div>
+    
+    {% if averages %}
+    
+    {% if user_review %}
+    <div style="background-color: #d1ecf1; padding: 20px; border: 1px solid #bee5eb; border-radius: 5px; margin-bottom: 20px;">
+        <h3>📊 Your Review Impact</h3>
+        <p><strong>You reviewed this lecturer on:</strong> {{ user_review.review_date.strftime('%B %d, %Y') if user_review.review_date else 'Date unavailable' }}</p>
+        
+        <h4 style="margin-top: 20px;">Your Ratings vs Class Average:</h4>
+        <ul style="list-style: none; padding-left: 0;">
+            {% set diff = (user_review.rating_clarity - averages.clarity)|round(1) %}
+            <li style="margin-bottom: 10px;">
+                <strong>Clarity:</strong> You gave {{ user_review.rating_clarity }}/5 | Average: {{ averages.clarity }}/5 
+                {% if diff > 0.1 %}
+                <span style="color: #28a745;">(+{{ diff }} above average)</span>
+                {% elif diff < -0.1 %}
+                <span style="color: #dc3545;">({{ diff }} below average)</span>
+                {% else %}
+                <span style="color: #6c757d;">(at average)</span>
+                {% endif %}
+            </li>
+            
+            {% set diff = (user_review.rating_engagement - averages.engagement)|round(1) %}
+            <li style="margin-bottom: 10px;">
+                <strong>Engagement:</strong> You gave {{ user_review.rating_engagement }}/5 | Average: {{ averages.engagement }}/5 
+                {% if diff > 0.1 %}
+                <span style="color: #28a745;">(+{{ diff }} above average)</span>
+                {% elif diff < -0.1 %}
+                <span style="color: #dc3545;">({{ diff }} below average)</span>
+                {% else %}
+                <span style="color: #6c757d;">(at average)</span>
+                {% endif %}
+            </li>
+            
+            {% set diff = (user_review.rating_punctuality - averages.punctuality)|round(1) %}
+            <li style="margin-bottom: 10px;">
+                <strong>Punctuality:</strong> You gave {{ user_review.rating_punctuality }}/5 | Average: {{ averages.punctuality }}/5 
+                {% if diff > 0.1 %}
+                <span style="color: #28a745;">(+{{ diff }} above average)</span>
+                {% elif diff < -0.1 %}
+                <span style="color: #dc3545;">({{ diff }} below average)</span>
+                {% else %}
+                <span style="color: #6c757d;">(at average)</span>
+                {% endif %}
+            </li>
+            
+            {% set diff = (user_review.rating_responsiveness - averages.responsiveness)|round(1) %}
+            <li style="margin-bottom: 10px;">
+                <strong>Responsiveness:</strong> You gave {{ user_review.rating_responsiveness }}/5 | Average: {{ averages.responsiveness }}/5 
+                {% if diff > 0.1 %}
+                <span style="color: #28a745;">(+{{ diff }} above average)</span>
+                {% elif diff < -0.1 %}
+                <span style="color: #dc3545;">({{ diff }} below average)</span>
+                {% else %}
+                <span style="color: #6c757d;">(at average)</span>
+                {% endif %}
+            </li>
+            
+            {% set diff = (user_review.rating_fairness - averages.fairness)|round(1) %}
+            <li style="margin-bottom: 10px;">
+                <strong>Fairness:</strong> You gave {{ user_review.rating_fairness }}/5 | Average: {{ averages.fairness }}/5 
+                {% if diff > 0.1 %}
+                <span style="color: #28a745;">(+{{ diff }} above average)</span>
+                {% elif diff < -0.1 %}
+                <span style="color: #dc3545;">({{ diff }} below average)</span>
+                {% else %}
+                <span style="color: #6c757d;">(at average)</span>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+    {% endif %}
+    
+
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 30px;">
+        <h3>Category Averages</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="border-bottom: 2px solid #dee2e6;">
+                <th style="text-align: left; padding: 10px;">Category</th>
+                <th style="text-align: center; padding: 10px;">Average Rating</th>
+            </tr>
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">Clarity</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.clarity }}/5</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">Engagement</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.engagement }}/5</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">Punctuality</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.punctuality }}/5</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 10px;">Responsiveness</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.responsiveness }}/5</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">Fairness</td>
+                <td style="text-align: center; padding: 10px;">{{ averages.fairness }}/5</td>
+            </tr>
+        </table>
+    </div>
+    
+
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 30px;">
+        <h3>Performance Visual</h3>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Clarity:</strong> {{ averages.clarity }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.clarity / 5) * 100 }}%; background-color: #36a2eb; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.clarity }}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Engagement:</strong> {{ averages.engagement }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.engagement / 5) * 100 }}%; background-color: #4bc0c0; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.engagement }}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Punctuality:</strong> {{ averages.punctuality }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.punctuality / 5) * 100 }}%; background-color: #ffce56; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.punctuality }}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Responsiveness:</strong> {{ averages.responsiveness }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.responsiveness / 5) * 100 }}%; background-color: #9966ff; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.responsiveness }}</div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>Fairness:</strong> {{ averages.fairness }}/5</p>
+            <div style="width: 100%; background-color: #e9ecef; border-radius: 3px; height: 25px;">
+                <div style="width: {{ (averages.fairness / 5) * 100 }}%; background-color: #ff6384; height: 25px; border-radius: 3px; text-align: center; line-height: 25px; color: white; font-weight: bold;">{{ averages.fairness }}</div>
+            </div>
+        </div>
+    </div>
+    
+
+    {% if distribution %}
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 30px;">
+        <h3>📈 How Students Rated This Lecturer</h3>
+        <p style="color: #666; margin-bottom: 20px;">Distribution of ratings across all categories</p>
+        
+
+        <div style="margin-bottom: 25px;">
+            <h4 style="margin-bottom: 10px;">Clarity</h4>
+            {% for rating in [5, 4, 3, 2, 1] %}
+            <div style="margin-bottom: 8px;">
+                <div style="display: flex; align-items: center;">
+                    <span style="width: 60px; font-weight: bold;">{{ rating }} ⭐</span>
+                    <div style="flex: 1; background-color: #e9ecef; height: 20px; border-radius: 3px; position: relative;">
+                        <div style="width: {{ (distribution.clarity[rating] / total_reviews) * 100 }}%; background-color: #36a2eb; height: 20px; border-radius: 3px;"></div>
+                    </div>
+                    <span style="width: 120px; text-align: right; padding-left: 10px;">{{ distribution.clarity[rating] }} ({{ ((distribution.clarity[rating] / total_reviews) * 100)|round|int }}%)</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+
+        <div style="margin-bottom: 25px;">
+            <h4 style="margin-bottom: 10px;">Engagement</h4>
+            {% for rating in [5, 4, 3, 2, 1] %}
+            <div style="margin-bottom: 8px;">
+                <div style="display: flex; align-items: center;">
+                    <span style="width: 60px; font-weight: bold;">{{ rating }} ⭐</span>
+                    <div style="flex: 1; background-color: #e9ecef; height: 20px; border-radius: 3px; position: relative;">
+                        <div style="width: {{ (distribution.engagement[rating] / total_reviews) * 100 }}%; background-color: #4bc0c0; height: 20px; border-radius: 3px;"></div>
+                    </div>
+                    <span style="width: 120px; text-align: right; padding-left: 10px;">{{ distribution.engagement[rating] }} ({{ ((distribution.engagement[rating] / total_reviews) * 100)|round|int }}%)</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+
+        <div style="margin-bottom: 25px;">
+            <h4 style="margin-bottom: 10px;">Punctuality</h4>
+            {% for rating in [5, 4, 3, 2, 1] %}
+            <div style="margin-bottom: 8px;">
+                <div style="display: flex; align-items: center;">
+                    <span style="width: 60px; font-weight: bold;">{{ rating }} ⭐</span>
+                    <div style="flex: 1; background-color: #e9ecef; height: 20px; border-radius: 3px; position: relative;">
+                        <div style="width: {{ (distribution.punctuality[rating] / total_reviews) * 100 }}%; background-color: #ffce56; height: 20px; border-radius: 3px;"></div>
+                    </div>
+                    <span style="width: 120px; text-align: right; padding-left: 10px;">{{ distribution.punctuality[rating] }} ({{ ((distribution.punctuality[rating] / total_reviews) * 100)|round|int }}%)</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+
+        <div style="margin-bottom: 25px;">
+            <h4 style="margin-bottom: 10px;">Responsiveness</h4>
+            {% for rating in [5, 4, 3, 2, 1] %}
+            <div style="margin-bottom: 8px;">
+                <div style="display: flex; align-items: center;">
+                    <span style="width: 60px; font-weight: bold;">{{ rating }} ⭐</span>
+                    <div style="flex: 1; background-color: #e9ecef; height: 20px; border-radius: 3px; position: relative;">
+                        <div style="width: {{ (distribution.responsiveness[rating] / total_reviews) * 100 }}%; background-color: #9966ff; height: 20px; border-radius: 3px;"></div>
+                    </div>
+                    <span style="width: 120px; text-align: right; padding-left: 10px;">{{ distribution.responsiveness[rating] }} ({{ ((distribution.responsiveness[rating] / total_reviews) * 100)|round|int }}%)</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+
+        <div style="margin-bottom: 25px;">
+            <h4 style="margin-bottom: 10px;">Fairness</h4>
+            {% for rating in [5, 4, 3, 2, 1] %}
+            <div style="margin-bottom: 8px;">
+                <div style="display: flex; align-items: center;">
+                    <span style="width: 60px; font-weight: bold;">{{ rating }} ⭐</span>
+                    <div style="flex: 1; background-color: #e9ecef; height: 20px; border-radius: 3px; position: relative;">
+                        <div style="width: {{ (distribution.fairness[rating] / total_reviews) * 100 }}%; background-color: #ff6384; height: 20px; border-radius: 3px;"></div>
+                    </div>
+                    <span style="width: 120px; text-align: right; padding-left: 10px;">{{ distribution.fairness[rating] }} ({{ ((distribution.fairness[rating] / total_reviews) * 100)|round|int }}%)</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+
+    {% if all_lecturers_avg %}
+    <div style="background-color: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 20px;">
+        <h3>🏆 How This Lecturer Compares</h3>
+        <p><strong>This lecturer's overall rating:</strong> {{ overall_rating }}/5</p>
+        <p><strong>Average across all lecturers:</strong> {{ all_lecturers_avg }}/5</p>
+        
+        <p style="font-size: 1.5em; margin-top: 20px;">
+            📊 This lecturer is performing <strong style="color: {% if 'ABOVE' in comparison_text %}#28a745{% elif 'BELOW' in comparison_text %}#dc3545{% else %}#6c757d{% endif %};">{{ comparison_text }}</strong>
+        </p>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <p>No reviews yet. Analytics will appear once students submit reviews.</p>
+    {% endif %}
+    
+    <br>
+    <a href="{{ url_for('reviews.lecturer_profile', lecturer_id=lecturer.id) }}">Back to Profile</a>
+</div>
+{% endblock %}
